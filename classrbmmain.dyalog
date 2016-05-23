@@ -1,4 +1,4 @@
- z←classrbm;layernum;nin;nout;a
+ z←classrbmmain;layernum;nin;nout;a
  ⍝ use of a RBM for discriminative training
  ⍝ classification
  ⍝ calculate free energy, for each class
