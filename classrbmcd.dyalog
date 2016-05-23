@@ -20,7 +20,7 @@
 
  t←((-1)↑(⍴b))
  h0hat←⊃x[1] ⍝ initialize posterior of visible as input
- biash←((1,t)⍴b[2;],0)
+ biash←((1,t)⍴b[2;])
  h1hat←1÷(1+*-1×biash+v0+.×⍉w)  ⍝ sigmoid activation
 
 
@@ -30,7 +30,7 @@
 
 
  ⍝ v1← P(v|h0)
- biasv←((1,t)⍴b[1;],0)
+ biasv←((1,t)⍴b[1;])
  v1←1÷(1+*-1×biasv+h1hat+.×w)
 
  ⍝ Update:
