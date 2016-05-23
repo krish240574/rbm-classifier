@@ -1,4 +1,4 @@
- z←classrbmcd x;b;w;lr;v0;v1;h0hat;h1hat;biash;biashv;h0;h1
+ z←numeraicd x;b;w;lr;v0;v1;h0hat;h1hat;biash;biashv;h0;h1
  ⍝ CD-1
  ⍝ start with a training unit vector v0
  ⍝ of visible units
@@ -30,13 +30,13 @@
 
 
  ⍝ v1← P(v|h0)
- biasv←((1,t)⍴b[1;])
+ biasv←((1,t)⍴b[1;],0)
  v1←1÷(1+*-1×biasv+h1hat+.×w)
 
  ⍝ Update:
  w←w+lr×((h1hat+.×⍉v0)-(h1hat+.×⍉v1))
- b[2;]←b[2;]+lr×(h0hat-h1hat)
- b[1;]←b[2;]+lr×(v0-v1)
+ b[2;]←(((1,(nin+1)))⍴b[2;])+lr×(h0hat-h1hat)
+ b[1;]←(((1,(nin+1)))⍴b[2;])+lr×(v0-v1)
  ⎕←'Updates are in the following format :'
  ⎕←'1. Weights after CD1'
  ⎕←'2. Biases of layer 1(visible layer)'
