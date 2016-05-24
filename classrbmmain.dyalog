@@ -1,43 +1,27 @@
- z←numermain;layernum;nin;nout;a
- ⍝ use of a RBM for discriminative training
- ⍝ classification
- ⍝ calculate free energy, for each class
- ⎕←'Reading CSV file, few seconds...'
- mnist←DealWithCsv'd:\datasets\mnist\mnist_train_small.csv'
- nr←(1↑⍴mnist)
- nc←((-1)↑⍴mnist)
- isz←28 ⍝ mnist image size 28X28 pixels
- numlayers←2 ⍝ one v, one h
- mnistmat←(nr,isz,isz)⍴mnist[(⍳nr);1+⍳((-1)+nc)]
- y←isz⍴1
- y[(isz÷2)?isz]←0
- firstimg←mnistmat[1;;],y  ⍝  ys appended
- 
- ⍝ sending one row now, can send whole 28X29 as a minibatch
- input←createinput (1,isz+1)⍴↑firstimg[1;] 
+ z←createinput sample
+ layernum←1 ⍝ for now
+ nin←(-1)↑(⍴sample)
+ nout←nin
+ lr←0.0001 ⍝ for now
+ ⍝ initialize weights
+ a←0.5*(6÷(nin+nout))
+ ⍝ http://docs.scipy.org/doc/numpy-1.10.0/reference/generated/numpy.random.uniform.html
+
+ tmp←DealWithCsv'c:\users\lenovo1\tmp.txt' ⍝ 28X29 randoom numbers, uniformly distributed b/w
+ ⍝ (-a/4) and (a/4)
+
+ ⍝ nin+1 , because we're adding another column to the inputs - the Ys.
+ w←⊃,/(((nin),(nin))⍴(tmp)) ⍝ ⊃ and ,/ for removing the nesting on each item -- aargh
+ numlayers←2 ⍝ for now
+ b←(numlayers,nin)⍴0 ⍝ biases
 
 
- ⍝ no need for layer number here - we have 2 layers only
- updates←numeraicd input
- b←(numlayers,isz+1)⍴⊃updates[2]
- w←⊃updates[1]
- xt←(1,isz+1)⍴⊃updates[3]
- ⍝ For each row, add a 0 first, then a 1
- ⍝ Compare free energies, the output class is the one that gives
- ⍝ the least free energy
- ⍝xt←(1,isz+1)⍴mnistmat[1;1;] ⍝ use xt as posterior
- xt[1;isz+1]←0  ⍝ set class as 0
- xj←((1,isz+1)⍴b[2;])+(xt+.×⍉w) ⍝ 2 → hidden layer number
- f0←(-1×xt+.×⍉(1,isz+1)⍴b[1;],0)-(10⍟(1+*xj))
+ ⍝ create the input nested array here
+ ⎕←'Input is as follows :'
+ ⎕←'1. Row of input, with class(Y) added'
+ ⎕←'2. Weights between v and h - 28X29'
+ ⎕←'3. Biases for each layer'
+ ⎕←'4. Learning rate'
 
- xt[1;isz+1]←1 ⍝ set class as 1
- xj←((1,isz+1)⍴b[2;])+(xt+.×⍉w)
- f1←(-1×xt+.×⍉(1,isz+1)⍴b[1;],0)-(10⍟(1+*xj))  ⍝ bias initialized and added for yc
-
- ⎕←f0
- ⎕←f1
- :If f0<f1
-     z←f0
- :Else
-     z←f1
- :EndIf
+ input←(sample)(w)((numlayers,nin)⍴b)(lr)
+ z←input
