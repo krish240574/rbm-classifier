@@ -31,8 +31,8 @@
 
  ⍝ Update:
  w←w+lr×((h1hat+.×⍉v0)-(h1hat+.×⍉v1))
- b[2;]←(((1,(nin)))⍴b[2;])+lr×(h0hat-h1hat)
- b[1;]←(((1,(nin)))⍴b[2;])+lr×(v0-v1)
+ b[2;]←((1,nin)⍴b[2;])+lr×(h0hat-h1hat)
+ b[1;]←((1,nin)⍴b[2;])+lr×(v0-v1)
 ⍝ ⎕←'Updates are in the following format :'
 ⍝ ⎕←'1. Weights after CD1'
 ⍝ ⎕←'2. Biases of layer 1(visible layer)'
