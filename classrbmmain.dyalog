@@ -1,6 +1,6 @@
 ⍝  Just run all this code in the main console - copy paste 
 
- (g_hhatarr g_w g_b g_lr g_nin g_numlayers g_mnistmat)←gencreateinput
+ (g_isz g_hhatarr g_w g_b g_lr g_nin g_numlayers g_mnistmat)←gencreateinput
  ⍝ add y values here - always add y values before use
  y←g_isz⍴1
  y[(g_isz÷2)?g_isz]←0
