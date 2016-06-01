@@ -2,36 +2,29 @@
  ⍝ use of a RBM for discriminative training
  ⍝ classification
  ⍝ calculate free energy, for each class
- ⎕←'Reading CSV file, few seconds...'
- mnist←DealWithCsv'd:\datasets\mnist\mnist_train_small.csv'
- nr←(1↑⍴mnist)
- nc←((-1)↑⍴mnist)
- isz←28 ⍝ mnist image size 28X28 pixels
- numlayers←2 ⍝ one v, one h
- mnistmat←(nr,isz,isz)⍴mnist[(⍳nr);1+⍳((-1)+nc)]
- y←isz⍴1
- y[(isz÷2)?isz]←0
- firstimg←mnistmat[1;;],y
- ⍝ sending one row now, can send whole 28X29 as a minibatch
- input←createinput(1,isz+1)⍴↑firstimg[1;]
 
- ⍝ input←(xt)(w)((numlayers,nin+1)⍴b)(lr)
+ (g_hhatarr g_w g_b g_lr g_nin g_numlayers g_mnistmat)←gencreateinput
+ ⍝ add y values here - always add y values before use - need to figure how to add columns to all arrays 
+ y←g_isz⍴1
+ y[(g_isz÷2)?g_isz]←0
+ firstimg←g_mnistmat[1;;],y
 
- count←0 ⍝ counter for CD-10
- updates←count numeraicd input
- b←(numlayers,isz+1)⍴⊃updates[2]
+ li←(0)(layernum)(10)
+ updates←numeraicd li
+
+ b←(g_numlayers,g_isz+1)⍴⊃updates[2]
  w←⊃updates[1]
- xt←(1,isz+1)⍴⊃updates[3]
+ xt←(1,g_isz+1)⍴⊃updates[3]
  ⍝ For each row, add a 0 first, then a 1
  ⍝ Compare free energies, the output class is the one that gives
  ⍝ the least free energy
- 
- xt[1;isz+1]←0  ⍝ set class as 0
- xj←((1,isz+1)⍴b[2;])+(xt+.×⍉w) ⍝ 2 → hidden layer number
+
+ firstimg[;g_isz+1]←0 ⍝ batch - all rows in y column to 0
+ xj←((1,g_isz+1)⍴g_b[2;])+(g_hhatarr[1;]+.×⍉w) ⍝ 2 → hidden layer number
  f0←+/(-1×xt+.×⍉(1,isz+1)⍴b[1;],0)-(10⍟(1+*xj))
 
- xt[1;isz+1]←1 ⍝ set class as 1
- xj←((1,isz+1)⍴b[2;])+(xt+.×⍉w)
+ firstimg[;g_isz+1]←1
+ xj←((1,isz+1)⍴b[2;])+(g_hhatarr[1;]+.×⍉w)
  f1←+/(-1×xt+.×⍉(1,isz+1)⍴b[1;],0)-(10⍟(1+*xj))  ⍝ bias initialized and added for yc
 
 
