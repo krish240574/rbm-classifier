@@ -1,46 +1,37 @@
- z←count classrbmcd x;b;w;lr;v0;v1;h0hat;h1hat;biash;biasv;input;nin;t;updates
- ⍝ CD-10
- ⍝ start with a training unit vector v0
- ⍝ of visible units
- ⍝ weights are passed to this function - initialized
- ⍝ w is the matrix of weights between a layer 1 and the layer 2
- ⍝ initialize biases to 0
- ⍝ b←(1,numneu)⍴0  initialized and passed here - biases
+ z←numeraicd li;biash;biasv;vzero;hzero;h;v;no_val;vhzero;l;count;cdn
+ ⍝ CD-n
+ no_val←0
+ cdn←⊃li[3] ⍝ number of iterations of the Gibb's chain
+ l←⊃li[2] ⍝ layer number
 
- b←⊃x[3] ⍝ biases - initialize according to Bengio's paper. (Practical...)
+ v←(1,g_nin)⍴⊃g_hhatarr[l-1;] ⍝ training vector
 
- w←⊃x[2]
+ count←1
+ biash←(1,g_nin)⍴g_b[l;]
+ biasv←(1,g_nin)⍴g_b[l-1;]
 
- lr←⊃x[4]
+ :While count≤cdn
+  ⍝  https://www.cs.toronto.edu/~hinton/csc2535/notes/lec4new.pdf
+  ⍝  slide 7
+     h←1÷(1+*-1×biash+v+.×⍉g_w[l-1;;])
+     v←1÷(1+*-1×biasv+h+.×g_w[l-1;;])
+     :If count=1
+         vhzero←h+.×⍉v
+         hzero←h
+         vzero←v
+     :EndIf
+     count←count+1
+ :EndWhile
+ ⍝ v and h have latest values, update using them
+ g_w[l;;]←g_w[l;;]+g_lr×(vhzero-(h+.×⍉v))
+ g_b[l;]←((1,g_nin)⍴g_b[l;])+g_lr×(hzero-h)
+ g_b[l-1;]←((1,g_nin)⍴g_b[l;])+g_lr×(vzero-v)
 
- h0hat←⊃x[1] ⍝ initialize posterior of visible as input
- v0←⊃x[1] ⍝ visible inputs
- nin←((-1)↑⍴(v0))
-
- biash←((1,nin)⍴b[2;])
- h1hat←1÷(1+*-1×biash+v0+.×⍉w)  ⍝ sigmoid activation
-
- ⍝ Repeat of h1hat calculation
- ⍝ h0 ← P(h|v0)
- ⍝h0←1÷(1+*-1×biash+v0+.×⍉w1)
-
- ⍝ v1← P(v|h0)
- biasv←((1,nin)⍴b[1;],0)
- v1←1÷(1+*-1×biasv+h1hat+.×w)
 
 
-⍝ ⎕←'Updates are in the following format :'
-⍝ ⎕←'1. Weights after CD1'
-⍝ ⎕←'2. Biases of layer 1(visible layer)'
-⍝ ⎕←'3. Biases of layer 2(hidden layer)'
- :If count<10
-     input←(v1)(w)(b)(lr)
-     z←(1+count)numeraicd input
+ :If l=2 ⍝ 1st layer(should be 1, but indexing in APL is from 1)
+     g_hhatarr[l;]←hzero     ⍝ return h0hat=first row of input
  :Else
-    ⍝ Update:
-     w←w+lr×((h1hat+.×⍉v0)-(h1hat+.×⍉v1))
-     b[2;]←((1,nin)⍴b[2;])+lr×(h0hat-h1hat)
-     b[1;]←((1,nin)⍴b[2;])+lr×(v0-v1)
-     updates←(w)(b)(v1)
-     z←updates
+     g_hhatarr[l;]←v
  :EndIf
+ z←no_val
