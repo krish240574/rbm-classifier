@@ -1,14 +1,22 @@
-⍝  Just run all this code in the main console - copy paste 
+ z←numermain;b;w;layernum;updates;count;li;input;numlayers;isz;xt;xj;f0;f1;firstimg
 
  (g_isz g_hhatarr g_w g_b g_lr g_nin g_numlayers g_mnistmat)←gencreateinput
+ g_hhatarr[0;]←g_mnistmat[1;;] ⍝ add first row of input
+
  ⍝ add y values here - always add y values before use
- y←g_isz⍴1
- y[(g_isz÷2)?g_isz]←0
- firstimg←g_mnistmat[1;;],y
+ g_numclasses←2 ⍝ binary classifier
+ g_y←(1,g_numclasses)⍴0
+ g_u←(g_numclasses,g_nin)⍴,g_w[1;;] ⍝ just borrow from g_w - a uniform dist.
+ ⍝ we're doing online learning, send one row at a time
+ count←1
  layernum←2
- count←0 ⍝ counter for CD-10
  li←(0)(layernum)(10)
- updates←numeraicd li
+ :While count≤g_isz
+     g_y[1;1+((?0)>0.5)]←1       ⍝ one-hot encoding
+     updates←numeraicd li
+     count←count+1
+ :EndWhile
+
 
  ⍝ For each row, add a 0 first, then a 1
  ⍝ Compare free energies, the output class is the one that gives
