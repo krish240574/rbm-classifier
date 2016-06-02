@@ -7,14 +7,15 @@
  h0hat←(1,g_nin)⍴⊃g_hhatarr[l-1;] ⍝ initialize posterior of visible as input
 
  count←1
- biash←(1,g_nin)⍴g_b[l;]
+ c←(1,g_nin)⍴g_b[l;]
  biasv←(1,g_nin)⍴g_b[l-1;]
 
  :While count≤cdn
   ⍝  https://www.cs.toronto.edu/~hinton/csc2535/notes/lec4new.pdf
   ⍝  slide 7
      h←1÷(1+*-1×biash+v+.×⍉g_w[l-1;;]+g_y+.×g_u)
-     v←1÷(1+*-1×biasv+h+.×g_w[l-1;;])
+     px←1÷(1+*-1×biasv+h+.×g_w[l-1;;])
+     py←(*d×h+.×g_u)÷(
      :If count=1
          vhzero←h+.×v
          hzero←h
