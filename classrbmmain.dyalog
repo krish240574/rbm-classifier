@@ -20,8 +20,8 @@
 ⍝ count←0 ⍝ counter for CD-10
 ⍝
 
- p_y_given_x_1←*g_d[1;1]+⍟(1+(g_hhatarr[2;⍳g_isz]+g_u[1;]+g_hhatarr[1;(⍳g_isz)]+.×g_w[1;;]))
- p_y_given_x_0←*g_d[1;2]+⍟(1+(g_hhatarr[2;⍳g_isz]+g_u[2;]+g_hhatarr[1;(⍳g_isz)]+.×g_w[1;;]))
+ p_y_given_x_1←(*g_d[1;1])×(×/(1+*(g_b[2;]+g_u[1;]+g_hhatarr[1;(⍳g_isz)]+.×g_w[1;;])))
+ p_y_given_x_0←(*g_d[1;2])×(×/(1+*(g_b[2;]+g_u[2;]+g_hhatarr[1;(⍳g_isz)]+.×g_w[1;;])))
 
 
  ⍝ For each row, add a 0 first, then a 1
